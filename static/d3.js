@@ -120,7 +120,7 @@ function render() {
 // draw nodes (reads from /nodes CSV)
 function drawNodes() {
     d3.csv("/nodes").then(function(data) {
-        // parse numeric values gently
+        // parse numeric values
         data.forEach(d => {
             d.x = +d.x || 0;
             d.y = +d.y || 0;
@@ -156,6 +156,11 @@ function drawNodes() {
                 .attr("cy", d => yScale(d.y))
                 .attr("r", 10)
                 .style("fill", nodeColor)
+                .style("cursor", "pointer")
+                .on("click", function(event, d) {
+                    event.stopPropagation();
+                    if (window.editNode) window.editNode(d);
+                })
                 .on("mouseover", function(event, d) {
                     tooltip.style("opacity", "1")
                         .html(`Name: ${d.nickname || "-"}<br>Mac: ${d.mac || d.id || "-"}<br>(${d.x}, ${d.y})<br>Range: ${d.range}ft`); // Show specific information for each node
